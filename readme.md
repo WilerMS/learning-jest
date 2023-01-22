@@ -1,7 +1,20 @@
-## Testing con JEST
-Jest es una librería de JavaScript que sirve para testear el código de las aplicaciones.
+<h1 align="center">TESTING CON JEST</h1>
+<p align="center">Jest es un framework de testing de JavaScript enfocado a la simplicidad a la hora de testear aplicaciones.</p>
+<p align="center"><img src="https://user-images.githubusercontent.com/70902862/213944396-419c64a6-c204-49c6-9de4-d7004f04c6ad.jpg"/></p> 
 
-### Instalando JEST
+## Tabla de contenidos:
+
+- [Instalando Jest](#instalando-jest)
+- [Primeros pasos](#primeros-pasos)
+  - [Matchers](#matchers)
+  - [Funciones](#funciones)
+  - [Promesas](#promesas)
+- [Jest con React](#jest-con-react)
+  - [Configuración](#configuración)
+  - [Testeando componentes](#testeando-componentes)
+
+
+## Instalando Jest
 Para instalar la librería usamos el comando:
 ```console
   npm install --save-dev jest
@@ -22,7 +35,7 @@ Una vez instalado ya podemos comenzar a crear nuestros tests. En primer lugar, p
   - `npm run test:watch` para ejecutar cada vez que se realiza un cambio en el código.
   - `npm run test:coverage` para crear un reporte e inspeccionar el alcance de nuestro código. *Se detallará más adelante*
 
-###  Empezando con JEST
+##  Primeros pasos
 
 Lo primero que debemos hacer es crear una carpeta donde estén contenidos nuestros test, por lo general la creamos en `src/test`. En esta carpeta podemos crear los archivos de test con la siguiente nomeclatura `<nombre_del_archivo>.test.js`.
 
@@ -49,7 +62,7 @@ Explicados cada uno de los métodos necesarios, la función quedaría de la sigu
   })  
 ```
 
-#### Matchers
+  ### Matchers
 
 En la función anterior se usaron métodos como `toBe`, `toMatch` y `not.toBeNull`. Estos son denominados matchers y sirven para comprobar que el valor del parametro cumple algún tipo de lógica *(especificada por nosotros)*.
 
@@ -74,26 +87,22 @@ A continuación, unos cuantos ejemplos que pueden ser interesantes.
   const array = ['Perro', 'Banana', 'fruta']
 
   describe('Descripción de tests de prueba', () => {
-
     test('Debe contener un texto', () => {
       expect(text).toMatch(/mundo/) // Success
     })
-
     test('Debe contener una banana', () => {
       expect(array).toContain('Banana') // Success
     })
-
     test('Es mayor que 23', () => {
       expect(number).toBeGreaterThan(23) // Failed
     })
-
     test('Es verdadero', () => {
       expect(boolean).toBeTruthy() // Success
     })
   })
 ```
 
-#### Funciones
+### Funciones
 
 Cuando testeamos aplicaciones, lo más común es testear una función en específico. Para ello lo hacemos de la siguiente manera:
 
@@ -115,7 +124,7 @@ También, puede darse el caso de querer ejecutar una función antes de empezar o
   afterAll(() => { /* Se ejecuta despues de todas las pruebas. */ })
 ```
 
-#### Promesas
+### Promesas
 
 Otra de las funcionalidades a testear pueden ser las promesas, para testearlas debemos hacer lo siguiente:
 
@@ -142,11 +151,11 @@ Otra de las funcionalidades a testear pueden ser las promesas, para testearlas d
   })
 ```
 
-###  JEST con REACT
+##  Jest con React
 
 Jest se puede también utilizar con aplicaciones de react. Para poder usarlo necesitaremos disponer de otra librería que nos permita montar los componentes de react para poder testearlos correctamente.
 
-#### Configuración
+### Configuración
 
 En estos ejemplos se usa `enzyme` y `enzyme-adapter-react-16`, ya que la aplicación está en react 16. Estos necesitan de una configuración para poder ser usados:
 
@@ -189,9 +198,9 @@ En estos ejemplos se usa `enzyme` y `enzyme-adapter-react-16`, ya que la aplicac
   }
 ```
 
-#### Testeando componentes 
+### Testeando componentes
 
-Para testear nuestros componentes de react haremos uso de unas funciones específicas para montar los componentes y buscar patrones en estos. Entre ellas están:
+Para testear nuestros componentes de react haremos uso de unas funciones específicas para montar los componentes y buscar características en estos. Entre ellas están:
 
 - **`mount`**: Sirve para montar un componente y buscar en estos distintas características.
 ```js
