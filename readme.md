@@ -3,7 +3,7 @@ Jest es una librería de JavaScript que sirve para testear el código de las apl
 
 ### Instalando JEST
 Para instalar la librería usamos el comando:
-```zsh
+```console
   npm install --save-dev jest
 ```
 
@@ -144,5 +144,47 @@ Otra de las funcionalidades a testear pueden ser las promesas, para testearlas d
 
 ###  JEST con REACT
 
+Jest se puede también utilizar con aplicaciones de react. Para poder usarlo necesitaremos disponer de otra librería que nos permita montar los componentes de react para poder testearlos correctamente.
 
+**Configuración**
 
+En estos ejemplos se usa `enzyme` y `enzyme-adapter-react-16`, ya que la aplicación está en react 16. Estos necesitan de una configuración para poder ser usados:
+
+- Instalamos las siguientes dependencias:
+```console
+  npm install --save-dev jest enzyme enzyme-adapter-react-16
+  npm install --save-dev --save-exact jsdom jsdom-global
+```
+- Creamos la carpeta `src/test`, que es donde guardaremos nuestros test
+- Creamos el archivo `src/test/setupTest.js` para crear un adaptador que le permitirá a jest montar los componentes de react.
+```js
+  // src/test/setupTest.js
+  import { configure } from 'enzyme';
+  import Adapter from 'enzyme-adapter-react-16';
+  configure({ adapter: new Adapter() });
+```
+- Creamos la carpeta `src/mocks` para guardar los archivos de mocks (módulos que simulan funcionalidades que jest no puede entender, como los estilos css).
+- Creamos el archivo `src/mocks/styleMock.js` para exportar aquello que queremos hacer cuando se encuentre un css.
+```js
+  // src/mocks/styleMock.js
+  module.exports = {};
+```
+- Añadimos al package.json la siguiente configuración:
+```json
+  "jest": {
+    "setupFilesAfterEnv":[
+      "<rootDir>/src/test/setupTest.js"
+    ],
+    "moduleNameMapper": {
+      "\\.(styl|css)$": "<rootDir>/src/mocks/styleMock.js"
+    }
+  }
+```
+- Añadimos los scripts al package.json:
+```json
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  }
+```
