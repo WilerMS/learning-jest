@@ -4,15 +4,19 @@
 
 ## Tabla de contenidos:
 
+- [Introducción](#introducción)
 - [Instalando Jest](#instalando-jest)
 - [Primeros pasos](#primeros-pasos)
   - [Matchers](#matchers)
   - [Funciones](#funciones)
   - [Promesas](#promesas)
-- [Jest con React](#jest-con-react)
+- [Jest con React Testing Library](#jest-con-react-testing-library)
   - [Configuración](#configuración)
   - [Testeando componentes](#testeando-componentes)
 
+## Introducción
+
+TODO: Introducción a los tests y los tipos que existen.
 
 ## Instalando Jest
 Para instalar la librería usamos el comando:
@@ -151,7 +155,7 @@ Otra de las funcionalidades a testear pueden ser las promesas, para testearlas d
   })
 ```
 
-##  Jest con React
+##  Jest con React Testing Library
 
 Jest se puede también utilizar con aplicaciones de react. Para poder usarlo necesitaremos disponer de otra librería que nos permita montar los componentes de react para poder testearlos correctamente.
 
