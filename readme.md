@@ -146,7 +146,7 @@ Otra de las funcionalidades a testear pueden ser las promesas, para testearlas d
 
 Jest se puede también utilizar con aplicaciones de react. Para poder usarlo necesitaremos disponer de otra librería que nos permita montar los componentes de react para poder testearlos correctamente.
 
-**Configuración**
+#### Configuración
 
 En estos ejemplos se usa `enzyme` y `enzyme-adapter-react-16`, ya que la aplicación está en react 16. Estos necesitan de una configuración para poder ser usados:
 
@@ -163,34 +163,11 @@ En estos ejemplos se usa `enzyme` y `enzyme-adapter-react-16`, ya que la aplicac
   import Adapter from 'enzyme-adapter-react-16';
   configure({ adapter: new Adapter() });
 ```
-- Creamos la carpeta `src/mocks` para guardar los archivos de mocks (módulos que simulan funcionalidades que jest no puede entender, como los estilos css).
+- Creamos la carpeta `src/mocks` para guardar los archivos de mocks (módulos que simulan funcionalidades que jest no puede entender, como los estilos css, las rutas de react-router o el estado de redux).
   - Creamos el archivo `src/mocks/styleMock.js` para exportar aquello que queremos hacer cuando se encuentre un css.
   ```js
     // src/mocks/styleMock.js
     module.exports = {};
-  ```
-  - Creamos el archivo `ProviderMock.js` para simular el montaje de los elementos de redux y react-router.
-  ```js
-    import React from 'react';
-    import { Router } from 'react-router-dom';
-    import { Provider } from 'react-redux';
-    import { createStore } from 'redux';
-    import { createBrowserHistory } from 'history';
-
-    import initialState from '../initialState';
-    import reducer from '../reducers';
-
-    const store = createStore(reducer, initialState);
-    const history = createBrowserHistory();
-
-    // Esto simula el montaje del componente tal y como se monta en la aplicación real
-    const ProviderMock = props => (
-      <Provider store={store}>
-        <Router history={history}>
-          {props.children}
-        </Router>
-      </Provider>
-    );
   ```
 - Añadimos al package.json la siguiente configuración:
 ```json
@@ -211,7 +188,8 @@ En estos ejemplos se usa `enzyme` y `enzyme-adapter-react-16`, ya que la aplicac
     "test:coverage": "jest --coverage"
   }
 ```
-**Testeando componentes**
+
+#### Testeando componentes 
 
 Para testear nuestros componentes de react haremos uso de unas funciones específicas para montar los componentes y buscar patrones en estos. Entre ellas están:
 
@@ -226,11 +204,54 @@ Para testear nuestros componentes de react haremos uso de unas funciones especí
 - **`shallow`**: Igual que mount pero este solo carga una cosa específica del componente y no todo el arbol.
 ```js
   test('Testeando con mount', () => {
-    const component = shallow(
-      <ProviderMock>
-        <Component />
-      </ProviderMock>,
-    )
+    const component = shallow(<Component />)
     expect(component.method(selector).subMethod()).matcher(value)
   })
 ```
+
+**Métodos para componentes**
+
+TODO: HACER LISTA DE METODOS PARA COMPONENTES
+
+**Uso de Mocks**
+En ciertas ocaciones vamos a necesitar simular ciertas funcionalidades de la aplicación, entre estas pueden estar las rutas de react-router o el connect de un estado de redux.
+
+Veamos un ejemplo de Mock en el que simulamos como incluir la store de redux y el history de react router en la aplicación:
+```js
+  import React from 'react';
+  import { Router } from 'react-router-dom';
+  import { Provider } from 'react-redux';
+  import { createStore } from 'redux';
+  import { createBrowserHistory } from 'history';
+
+  import initialState from '../initialState';
+  import reducer from '../reducers';
+
+  const store = createStore(reducer, initialState);
+  const history = createBrowserHistory();
+
+  // Esto simula el montaje del componente tal y como se monta en la aplicación real
+  const ProviderMock = props => (
+    <Provider store={store}>
+      <Router history={history}>
+        {props.children}
+      </Router>
+    </Provider>
+  );
+```
+
+Creado este Mock, podremos utilizarlo en nustros tests para testear distintas características de nuestros componentes:
+```js
+  describe('<Header />', () => {
+    test('El componentes se renderiza', () => {
+      const header = shallow(
+        <ProviderMock>
+          <Header />
+        </ProviderMock>,
+      );
+      expect(header.length).toEqual(1);
+    });
+  });
+```
+
+**Simulando funciones (click, ...)**
