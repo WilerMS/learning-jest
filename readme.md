@@ -164,11 +164,34 @@ En estos ejemplos se usa `enzyme` y `enzyme-adapter-react-16`, ya que la aplicac
   configure({ adapter: new Adapter() });
 ```
 - Creamos la carpeta `src/mocks` para guardar los archivos de mocks (módulos que simulan funcionalidades que jest no puede entender, como los estilos css).
-- Creamos el archivo `src/mocks/styleMock.js` para exportar aquello que queremos hacer cuando se encuentre un css.
-```js
-  // src/mocks/styleMock.js
-  module.exports = {};
-```
+  - Creamos el archivo `src/mocks/styleMock.js` para exportar aquello que queremos hacer cuando se encuentre un css.
+  ```js
+    // src/mocks/styleMock.js
+    module.exports = {};
+  ```
+  - Creamos el archivo `ProviderMock.js` para simular el montaje de los elementos de redux y react-router.
+  ```js
+    import React from 'react';
+    import { Router } from 'react-router-dom';
+    import { Provider } from 'react-redux';
+    import { createStore } from 'redux';
+    import { createBrowserHistory } from 'history';
+
+    import initialState from '../initialState';
+    import reducer from '../reducers';
+
+    const store = createStore(reducer, initialState);
+    const history = createBrowserHistory();
+
+    // Esto simula el montaje del componente tal y como se monta en la aplicación real
+    const ProviderMock = props => (
+      <Provider store={store}>
+        <Router history={history}>
+          {props.children}
+        </Router>
+      </Provider>
+    );
+  ```
 - Añadimos al package.json la siguiente configuración:
 ```json
   "jest": {
@@ -187,4 +210,27 @@ En estos ejemplos se usa `enzyme` y `enzyme-adapter-react-16`, ya que la aplicac
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
   }
+```
+**Testeando componentes**
+
+Para testear nuestros componentes de react haremos uso de unas funciones específicas para montar los componentes y buscar patrones en estos. Entre ellas están:
+
+- **`mount`**: Sirve para montar un componente y buscar en estos distintas características.
+```js
+  test('Testeando con mount', () => {
+    const component = mount(<Componente />)
+    // Los metodos descritos a continuación son ficticios
+    expect(component.method(selector).subMethod()).matcher(value)
+  })
+```
+- **`shallow`**: Igual que mount pero este solo carga una cosa específica del componente y no todo el arbol.
+```js
+  test('Testeando con mount', () => {
+    const component = shallow(
+      <ProviderMock>
+        <Component />
+      </ProviderMock>,
+    )
+    expect(component.method(selector).subMethod()).matcher(value)
+  })
 ```
