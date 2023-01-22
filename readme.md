@@ -1,10 +1,8 @@
 ## Testing con JEST
-
-### Instalando JEST
-
 Jest es una librería de JavaScript que sirve para testear el código de las aplicaciones.
 
-*Para instalar la librería usamos el comando:*
+### Instalando JEST
+Para instalar la librería usamos el comando:
 ```zsh
   npm install --save-dev jest
 ```
