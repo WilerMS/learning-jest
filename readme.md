@@ -4,7 +4,8 @@
 
 ## Tabla de contenidos:
 
-- [Introducción](#introducción)
+- [Tabla de contenidos:](#tabla-de-contenidos)
+- [Introducciónnn](#introducciónnn)
 - [Instalando Jest](#instalando-jest)
 - [Primeros pasos](#primeros-pasos)
   - [Matchers](#matchers)
@@ -14,7 +15,7 @@
   - [Configuración](#configuración)
   - [Testeando componentes](#testeando-componentes)
 
-## Introducción
+## Introducciónnn
 
 TODO: Introducción a los tests y los tipos que existen.
 
