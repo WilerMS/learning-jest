@@ -5,7 +5,7 @@
 ## Tabla de contenidos:
 
 - [Tabla de contenidos:](#tabla-de-contenidos)
-- [Introducciónnn](#introducciónnn)
+- [Introducción](#introducción)
 - [Instalando Jest](#instalando-jest)
 - [Primeros pasos](#primeros-pasos)
   - [Matchers](#matchers)
@@ -15,9 +15,14 @@
   - [Configuración](#configuración)
   - [Testeando componentes](#testeando-componentes)
 
-## Introducciónnn
+## Introducción
 
-TODO: Introducción a los tests y los tipos que existen.
+El testing es una disciplina que permite tener procesos, métodos de trabajo y herramientas para verificar y validar la funcionalidad de un software concreto.
+
+Existen varios tipos de testing, entre los que destacan las pruebas unitarias (Unit Testing), las pruebas de integración (Integration Testing) y las pruebas de extremo a extremo (End2End Testing).
+  - **Unit Testing**: *permiten identificar posibles errores de una funcionalidad concreta.*
+  - **Integration Testing**: *permiten identificar posibles fallos, ya sea de comunicación, de visualización o de alguna otra característica, entre varias areas que trabajan en conjunto.*
+  - **End2End Testing**: *permiten verificar el funcionamiento desde la perspectiva de un usuario real, estas involucran aplicaciones completas.*
 
 ## Instalando Jest
 Para instalar la librería usamos el comando:
@@ -47,8 +52,9 @@ Lo primero que debemos hacer es crear una carpeta donde estén contenidos nuestr
 En jest disponemos de varias funciones que nos ayudarán con la creación y declaración de nuestros tests, entre ellas:
 
 - **`describe`**: sirve para crear un scope para una funcionalidad específica, dentro de esta podemos definir cuantos test queramos para una misma funcionalidad.
-- **`test`**: sirve para ejecuar un test sobre una funcionalidad específica
-- **`expect`**: sirve para ejecuar un test sobre una funcionalidad específica
+- **`test`**: sirve para ejecutar un test sobre una funcionalidad específica.
+- **`test.skip`**: sirve para saltar la ejecución de un test concreto.
+- **`expect`**: sirve para ejecuar un test sobre una funcionalidad específica.
 
 Explicados cada uno de los métodos necesarios, la función quedaría de la siguiente manera:
 ```js
@@ -64,7 +70,7 @@ Explicados cada uno de los métodos necesarios, la función quedaría de la sigu
       expect('Hola mundo').toMatch(/mundo/); // Este test da success
       expect(null).not.toBeNull(); // Este test falla
     })
-  })  
+  })
 ```
 
   ### Matchers
@@ -82,6 +88,8 @@ Existen muchos tipos de matchers, por lo que es imposible detallarlos todos. Sin
   - **toBeLessThanOrEqual**: comprueba que el valor especificado es menor que el retornado.
   - **toMatch**: comprueba que un string pasa una regexp.
   - **toContain**:  comprueba que un array contiene un elemento.
+  
+>> Nota: Se pueden encontrar todos aqui: https://jestjs.io/docs/expect
 
 A continuación, unos cuantos ejemplos que pueden ser interesantes.
 
