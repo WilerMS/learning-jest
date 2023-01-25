@@ -1,19 +1,25 @@
 <h1 align="center">TESTING CON JEST</h1>
 <p align="center">Jest es un framework de testing de JavaScript enfocado a la simplicidad a la hora de testear aplicaciones.</p>
 <p align="center"><img src="https://user-images.githubusercontent.com/70902862/213944396-419c64a6-c204-49c6-9de4-d7004f04c6ad.jpg"/></p> 
+<h2>Tabla de contenidos:</h2>
 
-## Tabla de contenidos:
-
-- [Tabla de contenidos:](#tabla-de-contenidos)
 - [Introducción](#introducción)
 - [Instalando Jest](#instalando-jest)
 - [Primeros pasos](#primeros-pasos)
   - [Matchers](#matchers)
   - [Funciones](#funciones)
   - [Promesas](#promesas)
-- [Jest con React Testing Library](#jest-con-react-testing-library)
+- [Unit Testing con JEST (React)](#unit-testing-con-jest-react)
   - [Configuración](#configuración)
   - [Testeando componentes](#testeando-componentes)
+  - [Más Métodos](#más-métodos)
+  - [Simulación de eventos](#simulación-de-eventos)
+  - [Uso de Mocks](#uso-de-mocks)
+- [Integration Testing con JEST (Web Servers)](#integration-testing-con-jest-web-servers)
+  - [Configuración](#configuración-1)
+  - [Test en rutas](#test-en-rutas)
+- [End to End Testing con JEST y Cypress](#end-to-end-testing-con-jest-y-cypress)
+- [JEST con Typescript](#jest-con-typescript)
 
 ## Introducción
 
@@ -40,7 +46,7 @@ Una vez instalado ya podemos comenzar a crear nuestros tests. En primer lugar, p
     "test:coverage": "jest --coverage" // para usar esto, debe estar git inicializado
   }
 ```
-2. Ejecutar uno de los siguientes comandos
+1. Ejecutar uno de los siguientes comandos
   - `npm run test` para ejecutar los tests una vez.
   - `npm run test:watch` para ejecutar cada vez que se realiza un cambio en el código.
   - `npm run test:coverage` para crear un reporte e inspeccionar el alcance de nuestro código. *Se detallará más adelante*
@@ -89,7 +95,7 @@ Existen muchos tipos de matchers, por lo que es imposible detallarlos todos. Sin
   - **toMatch**: comprueba que un string pasa una regexp.
   - **toContain**:  comprueba que un array contiene un elemento.
   
->> Nota: Se pueden encontrar todos aqui: https://jestjs.io/docs/expect
+> Nota: se pueden encontrar todos aqui: https://jestjs.io/docs/expect
 
 A continuación, unos cuantos ejemplos que pueden ser interesantes.
 
@@ -164,7 +170,7 @@ Otra de las funcionalidades a testear pueden ser las promesas, para testearlas d
   })
 ```
 
-##  Jest con React Testing Library
+##  Unit Testing con JEST (React)
 
 Jest se puede también utilizar con aplicaciones de react. Para poder usarlo necesitaremos disponer de otra librería que nos permita montar los componentes de react para poder testearlos correctamente.
 
@@ -231,11 +237,14 @@ Para testear nuestros componentes de react haremos uso de unas funciones especí
   })
 ```
 
-**Métodos para componentes**
+### Más Métodos
 
 TODO: HACER LISTA DE METODOS PARA COMPONENTES
 
-**Uso de Mocks**
+### Simulación de eventos
+
+TODO: Simulación de eventos (click, ...)
+### Uso de Mocks
 En ciertas ocaciones vamos a necesitar simular ciertas funcionalidades de la aplicación, entre estas pueden estar las rutas de react-router o el connect de un estado de redux.
 
 Veamos un ejemplo de Mock en el que simulamos como incluir la store de redux y el history de react router en la aplicación:
@@ -275,5 +284,18 @@ Creado este Mock, podremos utilizarlo en nustros tests para testear distintas ca
     });
   });
 ```
+## Integration Testing con JEST (Web Servers)
 
-**Simulando funciones (click, ...)**
+TODO: Explain about it and configure
+
+### Configuración
+
+configuración para backend
+
+### Test en rutas
+
+test de rutas
+
+## End to End Testing con JEST y Cypress
+
+## JEST con Typescript
