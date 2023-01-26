@@ -187,37 +187,6 @@ Para configurar **`jest`** con **`react-testing-library`** tenemos que instalar 
   npm i --save-dev @testing-library/jest-dom
   npm i --save-dev @testing-library/user-event
 ```
-
-TODO: PASAR ESTO AL PUNTO USO DE MOCKS
-
-En esta ocasión, al usar `create-react-app` para configurar nuestra aplicación, ya vienen instaladas las dependencias necesarias.
-
-- Creamos la carpeta `src/test`, que es donde guardaremos nuestros test
-- Creamos el archivo `src/test/setupTest.js` para crear un adaptador que le permitirá a jest montar los componentes de react.
-```js
-  // src/test/setupTest.js
-  import { configure } from 'enzyme';
-  import Adapter from 'enzyme-adapter-react-16';
-  configure({ adapter: new Adapter() });
-```
-- Creamos la carpeta `src/mocks` para guardar los archivos de mocks (módulos que simulan funcionalidades que jest no puede entender, como los estilos css, las rutas de react-router o el estado de redux).
-  - Creamos el archivo `src/mocks/styleMock.js` para exportar aquello que queremos hacer cuando se encuentre un css.
-  ```js
-    // src/mocks/styleMock.js
-    module.exports = {};
-  ```
-- Añadimos al package.json la siguiente configuración:
-```json
-  "jest": {
-    "setupFilesAfterEnv":[
-      "<rootDir>/src/test/setupTest.js"
-    ],
-    "moduleNameMapper": {
-      "\\.(styl|css)$": "<rootDir>/src/mocks/styleMock.js"
-    }
-  }
-```
-
 ### Testeando componentes
 
 En primer lugar, por cada funcionalidad crearemos un archivo llamado `<nombre-del-componente>.test.js` en la carpeta `src/tests`. 
@@ -322,7 +291,7 @@ TODO: Simulación de eventos (click, ...)
 
 
 ### Uso de Mocks
-En ciertas ocaciones vamos a necesitar simular ciertas funcionalidades de la aplicación, entre estas pueden estar las rutas de react-router o el connect de un estado de redux.
+En ciertas ocaciones vamos a necesitar simular ciertas funcionalidades de la aplicación, entre estas pueden estar las rutas de react-router, el connect de un estado de redux o un simple click sobre un elemento.
 
 Veamos un ejemplo de Mock en el que simulamos como incluir la store de redux y el history de react router en la aplicación:
 ```js
