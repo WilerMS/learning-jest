@@ -172,17 +172,26 @@ Otra de las funcionalidades a testear pueden ser las promesas, para testearlas d
 
 ##  Unit Testing con JEST (React)
 
-Jest se puede también utilizar con aplicaciones de react. Para poder usarlo necesitaremos disponer de otra librería que nos permita montar los componentes de react para poder testearlos correctamente.
+Jest también se puede utilizar para testear aplicaciones de react. Para poder usarlo necesitaremos disponer de otra librería que nos permita **montar los componentes** de react para poder testearlos correctamente.
+
+En estos ejemplos usaremos `react-testing-library`, que nos provee de muchas utilidades que serán de gran ayuda para montar y testear nuestros componentes y crearemos los test de mi aplicación **clipboard**.
+
+> Nota: para acceder al repositorio [haz click aquí.](https://github.com/WilerMS/clipboard-app)
 
 ### Configuración
 
-En estos ejemplos se usa `enzyme` y `enzyme-adapter-react-16`, ya que la aplicación está en react 16. Estos necesitan de una configuración para poder ser usados:
+Para configurar **`jest`** con **`react-testing-library`** tenemos que instalar las siguientes dependencias.
 
-- Instalamos las siguientes dependencias:
 ```console
-  npm install --save-dev jest enzyme enzyme-adapter-react-16
-  npm install --save-dev --save-exact jsdom jsdom-global
+  npm install --save-dev @testing-library/react
+  npm i --save-dev @testing-library/jest-dom
+  npm i --save-dev @testing-library/user-event
 ```
+
+TODO: PASAR ESTO AL PUNTO USO DE MOCKS
+
+En esta ocasión, al usar `create-react-app` para configurar nuestra aplicación, ya vienen instaladas las dependencias necesarias.
+
 - Creamos la carpeta `src/test`, que es donde guardaremos nuestros test
 - Creamos el archivo `src/test/setupTest.js` para crear un adaptador que le permitirá a jest montar los componentes de react.
 ```js
@@ -208,42 +217,110 @@ En estos ejemplos se usa `enzyme` y `enzyme-adapter-react-16`, ya que la aplicac
     }
   }
 ```
-- Añadimos los scripts al package.json:
-```json
-  "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
-  }
-```
 
 ### Testeando componentes
 
-Para testear nuestros componentes de react haremos uso de unas funciones específicas para montar los componentes y buscar características en estos. Entre ellas están:
+En primer lugar, por cada funcionalidad crearemos un archivo llamado `<nombre-del-componente>.test.js` en la carpeta `src/tests`. 
 
-- **`mount`**: Sirve para montar un componente y buscar en estos distintas características.
+En este archivo, lo primero que haremos es "extender" las capacidades de **Jest** con métodos específicos para react.
+
 ```js
-  test('Testeando con mount', () => {
-    const component = mount(<Componente />)
-    // Los metodos descritos a continuación son ficticios
-    expect(component.method(selector).subMethod()).matcher(value)
+  import '@testing-library/jest-dom/extend-expect'
+```
+
+Para testear nuestros componentes de react usaremos la función `render`, ya que nos permite renderizar nuestro componente para poder buscar ciertas características en él.
+
+```js
+  import React from 'react'
+  // Agregamos funcionalidades añadidas a Jest
+  import '@testing-library/jest-dom/extend-expect'
+  // importamos render para montar nuestros componentes
+  import { render } from '@testing-library/react'
+  // importamos el componente a testear
+  import { Componente } from './ruta-del-componente'
+
+  test('Testeando componente en react', () => {
+    // renderizamos el componente y lo guardamos en view
+    const view = render(<Componente />)
+    // Esta es la forma de testear con expect
+    expect(view.container).matcher(value)
+    // Esta es la forma de testear con react-testing-libary
+    view.method(value)
   })
 ```
-- **`shallow`**: Igual que mount pero este solo carga una cosa específica del componente y no todo el arbol.
-```js
-  test('Testeando con mount', () => {
-    const component = shallow(<Component />)
-    expect(component.method(selector).subMethod()).matcher(value)
-  })
-```
+
+La función render tiene ciertos atributos que pueden ser interesantes de usar a nuestro favor. Entre ellos están:
+
+- `view.debug()`: esta muestra por consola el html del componente.
+- `view.container`: contiene un elemento del DOM correspondiente al componente. En este elemento podemos usar métodos del DOM como `container.querySelector('selector')`.
+- `view.unmount()`: sirve para desmontar el componente
+
+> NOTA: Para saber más acerca de estos métodos y atributos ponemos visitar la documentación oficial o hacer un `console.log(view)` y ver todo lo que nos ofrece.
+
+Por otra parte, contamos también con la función `screen`, que sirve para lo mismo que render...
+TODO: INVESTIGAR Y TERMINAR DE ENTENDER SCREEN.
 
 ### Más Métodos
 
-TODO: HACER LISTA DE METODOS PARA COMPONENTES
+Como vimos en el punto anterior, podemos simular el renderizado de nuestros componentes y testear la lógica que en ellos se encuentra. Para esto haremos uso de los siguientes métodos:
+
+- `view.getByText('Texto')` este es un método **síncrono** que busca un texto en el componente y falla si no lo encuentra o si coincide más de una vez.
+- `view.findByText('Texto')` este es un método **asíncrono** que busca un texto en el componente y falla si no lo encuentra o si coincide más de una vez.
+- `view.getAllByText('Texto')` igual a ***getByText*** pero no falla si encuentra más de una coincidencia.
+- `view.findAllByText('Texto')` igual a ***findByText*** pero no falla si encuentra más de una coincidencia.
+
+Tal y como habrás notado, todos estos métodos tienen una característica común, y es que suelen empezar por *getBy* o *findBy*. Esta característica se comparte en todos los métodos disponibles para `component`. Entre ellos:
+
+| ByText        | ByLabelText        | ByRole        | ByTitle        | ByTestId        |
+| ------------- | ------------------ | ------------- | -------------- | --------------- |
+| getByText     | getByLabelText     | getByRole     | getByTitle     | getByTestId     |
+| findByText    | findByLabelText    | findByRole    | findByTitle    | findByTestId    |
+| getAllByText  | getAllByLabelText  | getAllByRole  | getAllByTitle  | getAllByTestId  |
+| findAllByText | findAllByLabelText | findAllByRole | findAllByTitle | findAllByTestId |
+
+Probemos algunos de estos para entender mejor su funcionamiento real.
+
+
+```js
+  import React from 'react'
+  import '@testing-library/jest-dom/extend-expect'
+  import { render, screen } from '@testing-library/react'
+  import GeneralMessage from '../components/GeneralMessage'
+
+  describe('<GeneralMessage>', () => {
+
+    const text = 'Test message'
+    const type = 'error'
+    
+    test('should render', () => {
+      const { container } = render(<GeneralMessage text={text} type={type} />)
+      expect(container).toBeInTheDocument()
+    })
+
+    test(`should contain '${text}'`, () => {
+      render(<GeneralMessage text={text} type={type} />)
+      screen.getByText(text)
+    })
+
+    test(`should match with this regexp /Test/`, () => {
+      render(<GeneralMessage text={text} type={type} />)
+      screen.getByText(/Test/)
+    })
+
+    test('should have an h2 heading', () => {
+      render(<GeneralMessage text={text} type={type} />)
+      const h2 = screen.getByRole('heading')
+      expect(h2.tagName).toBe('H2')
+    })
+
+  })
+```
 
 ### Simulación de eventos
 
 TODO: Simulación de eventos (click, ...)
+
+
 ### Uso de Mocks
 En ciertas ocaciones vamos a necesitar simular ciertas funcionalidades de la aplicación, entre estas pueden estar las rutas de react-router o el connect de un estado de redux.
 
