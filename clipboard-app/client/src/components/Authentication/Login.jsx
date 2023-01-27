@@ -6,11 +6,11 @@ import { useAuthContext } from '../../context/auth.context'
 import Input from './Input'
 
 
-const Login = ({ setIsLogginIn }) => {
+const Login = () => {
 
   const [userData, setUserData] = useState({ username: '', password: '' })
   const { error, loading, fetchData } = useFetch('/login', false)
-  const { setLoggedIn } = useAuthContext()
+  const { setLoggedIn, setAuthSection } = useAuthContext()
 
   const handleChange = (e) => {
     setUserData({
@@ -58,7 +58,7 @@ const Login = ({ setIsLogginIn }) => {
         </S.Button>
         <div className='signup'>
           Don't have an account?
-          <span onClick={() => setIsLogginIn(false)}> Sign Up</span>
+          <span onClick={() => setAuthSection('register')}> Sign Up</span>
         </div>
       </div>
     </S.Container>

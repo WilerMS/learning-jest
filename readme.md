@@ -13,8 +13,8 @@
   - [Configuración](#configuración)
   - [Testeando componentes](#testeando-componentes)
   - [Más Métodos](#más-métodos)
-  - [Simulación de eventos](#simulación-de-eventos)
   - [Uso de Mocks](#uso-de-mocks)
+  - [Simulación de eventos](#simulación-de-eventos)
 - [Integration Testing con JEST (Web Servers)](#integration-testing-con-jest-web-servers)
   - [Configuración](#configuración-1)
   - [Test en rutas](#test-en-rutas)
@@ -284,12 +284,6 @@ Probemos algunos de estos para entender mejor su funcionamiento real.
 
   })
 ```
-
-### Simulación de eventos
-
-TODO: Simulación de eventos (click, ...)
-
-
 ### Uso de Mocks
 En ciertas ocaciones vamos a necesitar simular ciertas funcionalidades de la aplicación, entre estas pueden estar las rutas de react-router, el connect de un estado de redux o un simple click sobre un elemento.
 
@@ -321,15 +315,71 @@ Creado este Mock, podremos utilizarlo en nustros tests para testear distintas ca
 ```js
   describe('<Header />', () => {
     test('El componentes se renderiza', () => {
-      const header = shallow(
+      const header = render(
         <ProviderMock>
           <Header />
         </ProviderMock>,
-      );
-      expect(header.length).toEqual(1);
-    });
-  });
+      )
+      expect(header).toBeInTheDocument()
+    })
+  })
 ```
+
+Otra forma de mock puede ser reemplazar ciertos módulos usados por nuestros componentes. De esta manerá, cada vez que jest detecte estos módulos, los reemplazará por nuestras simulaciones.
+
+```js
+  // Login.test.js
+  jest.mock('../context/auth.context', () => {
+    return {
+      useAuthContext: () => ({ 
+        setLoggedIn: () => { }, 
+        setAuthSection: () => { }
+      })
+    }
+  })
+
+  describe('<Login>', () => {
+    test('renders component', () => {
+      const { container } = render(<Login />)
+      expect(container).toBeInTheDocument()
+    })
+    test('shows header title', () => {
+      render(<Login />)
+      screen.getByText(/CLIPBOARD/)
+    })
+  })
+```
+
+```js
+  // Login.jsx
+  import { useAuthContext } from '../../context/auth.context'
+
+  const Login = () => {
+    const [userData, setUserData] = useState({ username: '', password: '' })
+    const { setLoggedIn, setAuthSection } = useAuthContext()
+    return (
+      <div className="login">
+        <S.SignIn>CLIPBOARD</S.SignIn>
+        /* ... */
+        <div className='signup'>
+          Don't have an account?
+          <span onClick={() => setAuthSection('register')}> Sign Up</span>
+        </div>
+      </div>
+    )
+  }
+
+  export default Login
+```
+### Simulación de eventos
+
+Es común testear aquellos eventos o handles de nuestros componentes. Para ello, Jest nos provee de ciertas funciones para simular distintos tipos de funciones e inspeccionar ciertas características en ellas.
+
+```js
+  
+```
+
+
 ## Integration Testing con JEST (Web Servers)
 
 TODO: Explain about it and configure

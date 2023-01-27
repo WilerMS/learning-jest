@@ -1,16 +1,17 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useAuthContext } from '../../context/auth.context'
 import Login from './Login'
 import Register from './Register'
 
 
 const Authentication = () => {
 
-  const [isLogginIn, setIsLogginIn] = useState(true)
+  const { authSection } = useAuthContext()
 
   return (
-    isLogginIn
-      ? <Login setIsLogginIn={setIsLogginIn} />
-      : <Register setIsLogginIn={setIsLogginIn} />
+    authSection === 'login'
+      ? <Login />
+      : <Register />
   )
 
 }

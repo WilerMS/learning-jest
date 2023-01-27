@@ -4,6 +4,7 @@ import { IoIosCheckmarkCircleOutline } from 'react-icons/io'
 import { useEffect, useState } from 'react'
 import useFetch from '../../hooks/useFetch'
 import Input from './Input'
+import { useAuthContext } from '../../context/auth.context'
 
 const SuccessRegistration = ({ children }) => {
   return (
@@ -15,6 +16,7 @@ const SuccessRegistration = ({ children }) => {
 
 const Register = ({ setIsLogginIn }) => {
 
+  const { setAuthSection } = useAuthContext()
   const [passwordsMatch, setPasswordsMatch] = useState(true)
   const { error, loading, fetchData } = useFetch('/register', false)
   const [success, setSuccess] = useState(null)
@@ -57,7 +59,7 @@ const Register = ({ setIsLogginIn }) => {
                 <IoIosCheckmarkCircleOutline />
                 <span>{success.message}</span>
                 <div className='signup open'>
-                  <span onClick={() => setIsLogginIn(true)}> Click here to go back</span>
+                  <span onClick={() => setAuthSection('login')}> Click here to go back</span>
                 </div>
               </SuccessRegistration>
             : <>
@@ -90,7 +92,7 @@ const Register = ({ setIsLogginIn }) => {
                   Sign Up
                 </S.Button>
                 <div className='signup open'>
-                  <span onClick={() => setIsLogginIn(true)}> Go Back to login</span>
+                  <span onClick={() => setAuthSection('login')}> Go Back to login</span>
                 </div>
               </>
         }
