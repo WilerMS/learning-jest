@@ -285,58 +285,62 @@ Probemos algunos de estos para entender mejor su funcionamiento real.
   })
 ```
 ### Uso de Mocks
-En ciertas ocaciones vamos a necesitar simular ciertas funcionalidades de la aplicación, entre estas pueden estar las rutas de react-router, el connect de un estado de redux o un simple click sobre un elemento.
+En ciertas ocaciones vamos a necesitar simular ciertas funcionalidades de la aplicación, entre estas pueden estar las rutas de react-router, el connect de un estado de redux o un hook para recuperar un estado global. Para estas tareas tenemos los **`mocks`**.
 
-Veamos un ejemplo de Mock en el que simulamos como incluir la store de redux y el history de react router en la aplicación:
+Veamos un ejemplo de Mock en el que simulamos como incluir la store de redux en una aplicación:
 ```js
-  import React from 'react';
-  import { Router } from 'react-router-dom';
-  import { Provider } from 'react-redux';
-  import { createStore } from 'redux';
-  import { createBrowserHistory } from 'history';
+  import { Provider } from 'react-redux'
+  import { createStore } from 'redux'
+  import { initialState, reducer } from '@paths'
 
-  import initialState from '../initialState';
-  import reducer from '../reducers';
-
-  const store = createStore(reducer, initialState);
-  const history = createBrowserHistory();
+  const store = createStore(reducer, initialState)
 
   // Esto simula el montaje del componente tal y como se monta en la aplicación real
-  const ProviderMock = props => (
+  const ReduxProviderMock = props => (
     <Provider store={store}>
-      <Router history={history}>
-        {props.children}
-      </Router>
+      {props.children}
     </Provider>
-  );
+  )
 ```
 
-Creado este Mock, podremos utilizarlo en nustros tests para testear distintas características de nuestros componentes:
+Creado este Mock, podremos utilizarlo en nuestros tests para testear distintas características de nuestros componentes:
 ```js
   describe('<Header />', () => {
     test('El componentes se renderiza', () => {
       const header = render(
-        <ProviderMock>
+        <ReduxProviderMock>
           <Header />
-        </ProviderMock>,
+        </ReduxProviderMock>,
       )
       expect(header).toBeInTheDocument()
     })
   })
 ```
 
-Otra forma de mock puede ser reemplazar ciertos módulos usados por nuestros componentes. De esta manerá, cada vez que jest detecte estos módulos, los reemplazará por nuestras simulaciones.
+También podemos usar mocks para reemplazar ciertos módulos usados por nuestros componentes. De esta manerá, cada vez que jest detecte estos módulos, los reemplazará por nuestras simulaciones.
 
+En este caso tenemos el componente **`<Login />`**, que utiliza el hook **`useAuthContext`** para obtener datos de un estado global. 
+```js
+  // Login.jsx
+  import { useAuthContext } from '../../context/auth.context'
+
+  const Login = () => {
+    const { setAuthSection } = useAuthContext()
+    return (
+      <div className="login">
+        /* ... */
+        <span onClick={() => setAuthSection('register')}> Sign Up</span>
+      </div>
+    )
+  }
+  export default Login
+```
+Este hook consume un estado global que no está presente en nuestros test, y por ello podremos simularlo mediante mocks de la siguiente manera.
 ```js
   // Login.test.js
-  jest.mock('../context/auth.context', () => {
-    return {
-      useAuthContext: () => ({ 
-        setLoggedIn: () => { }, 
-        setAuthSection: () => { }
-      })
-    }
-  })
+  jest.mock('../context/auth.context', () => ({
+    useAuthContext: () => ({ setAuthSection: () => { } })
+  }))
 
   describe('<Login>', () => {
     test('renders component', () => {
@@ -345,38 +349,86 @@ Otra forma de mock puede ser reemplazar ciertos módulos usados por nuestros com
     })
     test('shows header title', () => {
       render(<Login />)
-      screen.getByText(/CLIPBOARD/)
+      screen.getByText(/Sign Up/)
     })
   })
 ```
-
-```js
-  // Login.jsx
-  import { useAuthContext } from '../../context/auth.context'
-
-  const Login = () => {
-    const [userData, setUserData] = useState({ username: '', password: '' })
-    const { setLoggedIn, setAuthSection } = useAuthContext()
-    return (
-      <div className="login">
-        <S.SignIn>CLIPBOARD</S.SignIn>
-        /* ... */
-        <div className='signup'>
-          Don't have an account?
-          <span onClick={() => setAuthSection('register')}> Sign Up</span>
-        </div>
-      </div>
-    )
-  }
-
-  export default Login
-```
 ### Simulación de eventos
 
-Es común testear aquellos eventos o handles de nuestros componentes. Para ello, Jest nos provee de ciertas funciones para simular distintos tipos de funciones e inspeccionar ciertas características en ellas.
+Vistos los mocks, es hora de ver otro tipo de simulaciones, y es que es común testear aquellos eventos o handles de nuestros componentes. Para ello, Jest nos provee de ciertas funciones para simular distintos tipos de funciones e inspeccionar ciertas características en ellas.
+
+**Ejemplo:** 
+
+En el siguiente ejemplo vamos a testear un click en el componente **`<Login />`** para comprobar que funciona correctamente.
 
 ```js
-  
+  import { render, screen, fireEvent } from '@testing-library/react'
+  import Login from './../components/Authentication/Login'
+
+  // Creamos el siguiente mock para simular una funcionalidad
+  const mockSetAuthSection = jest.fn()
+
+  // Cambiamos el módulo useAuthContext por uno simulado
+  jest.mock('../context/auth.context', () => ({
+    useAuthContext: () => ({
+      setAuthSection: mockSetAuthSection
+    })
+  }))
+
+  describe('<Login>', () => {
+    test('clicking on Sign Up', () => {
+      // Renderizamos nuestro componente
+      render(<Login />)
+      // Obtenemos el elemento sobre el que queremos hacer click
+      const button = screen.getByText(/Sign Up/)
+      // Hacemos click en el elemento obtenido
+      fireEvent.click(button)
+
+      // Al hacer click, debería llamarse la función setAuthSection
+      expect(mockSetAuthSection).toHaveBeenCalledTimes(1)
+      expect(mockSetAuthSection).toHaveBeenCalledWith('register')
+    })
+  })
+```
+Hecho esto, dejo una breve explicación sobre lo que pasa en el test:
+
+1. Importamos los módulos y componentes necesarios para testear la aplicación. Entre ellos, fireEvent que sirve para simular eventos en los componentes.
+```js
+  import { render, screen, fireEvent } from '@testing-library/react'
+  import Login from './../components/Authentication/Login'  
+```
+1. Usamos **`jest.fn()`** para crear una función ficticia y poder realizar pruebas sobre ella. El nombre de la función tiene que empezar por `mock`.
+
+```js
+  const mockSetAuthSection = jest.fn()
+```
+3. Cambiamos con **`jest.mock()`** el módulo `../context/auth.context` para que al importarlo, en vez del original, coja el siguiente módulo:
+
+```js
+  jest.mock('../context/auth.context', () => ({
+    useAuthContext: () => ({
+      setAuthSection: mockSetAuthSection
+    })
+  }))
+```
+4. Iniciamos nuestro test, renderizamos el componente y obtenemos el elemento `<span>Sign up</span>`.
+```js
+  describe('<Login>', () => {
+    test('clicking on Sign Up', () => {
+      render(<Login />)
+      const button = screen.getByText(/Sign Up/)
+      /* ... */
+    })
+  })
+```
+5. Con el módulo `fireEvent`, simulamos el evento click sobre el elemento recuperado.
+```js
+  fireEvent.click(button)
+```
+6. Usamos `mockSetAuthSection` para hacer nuestros `expect`.
+```js
+  expect(mockSetAuthSection).toHaveBeenCalledTimes(1)
+  expect(mockSetAuthSection).toHaveBeenCalledWith('register') 
 ```
 
 
