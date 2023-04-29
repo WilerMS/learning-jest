@@ -116,14 +116,14 @@ A continuación, unos cuantos ejemplos que pueden ser interesantes.
       expect(number).toBeGreaterThan(23) // Failed
     })
     test('Es verdadero', () => {
-      expect(boolean).toBeTruthy() // Success
+      expect(boolean).toBeTruthy() // true value Success
     })
   })
 ```
 
 ### Funciones
 
-Cuando testeamos aplicaciones, lo más común es testear una función en específico. Para ello lo hacemos de la siguiente manera:
+Cuando testeamos aplicaciones, lo más de aá común es testear una función en específico. Para ello lo hacemos de la siguiente manera:
 
 ```js
   const reverseString = (string) => {
