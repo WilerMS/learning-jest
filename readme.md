@@ -170,7 +170,7 @@ Otra de las funcionalidades a testear pueden ser las promesas, para testearlas d
   })
 ```
 
-##  Unit Testing con JEST (React)
+##  Unit Testing con JEST (React) 
 
 Jest también se puede utilizar para testear aplicaciones de react. Para poder usarlo necesitaremos disponer de otra librería que nos permita **montar los componentes** de react para poder testearlos correctamente.
 
