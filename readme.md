@@ -436,11 +436,13 @@ Hecho esto, dejo una breve explicación sobre lo que pasa en el test:
 
 TODO: Explain about it and configure
 
-### Configuración
+### Configuración.  
 
 configuración para backend
 
 ### Test en rutas
+
+- supertest explicar
 
 test de rutas
 
