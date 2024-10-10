@@ -15,11 +15,6 @@
   - [Más Métodos](#más-métodos)
   - [Uso de Mocks](#uso-de-mocks)
   - [Simulación de eventos](#simulación-de-eventos)
-- [Integration Testing con JEST (Web Servers)](#integration-testing-con-jest-web-servers)
-  - [Configuración](#configuración-1)
-  - [Test en rutas](#test-en-rutas)
-- [End to End Testing con JEST y Cypress](#end-to-end-testing-con-jest-y-cypress)
-- [JEST con Typescript](#jest-con-typescript)
 
 ## Introducción
 
@@ -430,21 +425,6 @@ Hecho esto, dejo una breve explicación sobre lo que pasa en el test:
   expect(mockSetAuthSection).toHaveBeenCalledTimes(1)
   expect(mockSetAuthSection).toHaveBeenCalledWith('register') 
 ```
-
-
-## Integration Testing con JEST (Web Servers)
-
-TODO: Explain about it and configure
-
-### Configuración.  
-
-configuración para backend
-
-### Test en rutas
-
-- supertest explicar
-
-test de rutas
 
 ## End to End Testing con JEST y Cypress
 
